@@ -1,0 +1,6 @@
+{
+  "concurrent": false,
+  "linters": {
+    "*.{js,json,css,md}": ["prettier --write", "git add"]
+  }
+}
