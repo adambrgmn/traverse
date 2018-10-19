@@ -1,26 +1,29 @@
 // @flow
 import { createGlobalStyle } from 'styled-components';
 import { normalize } from 'polished';
+import { leading, padding, color } from './utils';
 
 const Global = createGlobalStyle`
   ${normalize()}
+
+  html {
+    font-size: ${p => p.theme.type.baseFontSize * 16}px;
+    line-height: ${leading(1)};
+    border-radius: 4px;
+  }
 
   *,
   *::before,
   *::after {
     box-sizing: border-box;
-  }
-
-  html {
-    font-size: 16px;
-    line-height: 1.3em;
+    line-height: ${leading(1)};
   }
 
   body {
     width: 20rem;
-    padding: 0.5rem;
+    padding: ${padding(0.5)};
     font-family: 'Roboto Mono', monospace;
-    color: #403b3b;
+    color: ${color('black')};
   }
 `;
 

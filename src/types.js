@@ -16,3 +16,15 @@ export type Bookmark = {
 };
 
 export type BookmarkTree = Array<Bookmark | BookmarkDirectory>;
+export type BookmarkList = Array<Bookmark>;
+
+export type Stage = 'idle' | 'traversing' | 'error';
+
+export type TraverseListItem = { id: string, title: string, url: string };
+
+export type Settings = {
+  stage: Stage,
+  activeTab: ?string,
+  lastPosition: ?number,
+  list: BookmarkList,
+};

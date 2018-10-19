@@ -9,7 +9,8 @@
   "private": true,
   "scripts": {
     "start": "parcel watch src/manifest.json",
-    "build": "parcel build src/manifest.json"
+    "build": "parcel build src/manifest.json",
+    "flow": "flow"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
