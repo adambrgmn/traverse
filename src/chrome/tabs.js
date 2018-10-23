@@ -50,4 +50,24 @@ function remove(tabId: number): Promise<void> {
   });
 }
 
-export { create, update, remove };
+function activate(tabId: number): Promise<?chrome$Tab> {
+  return update(tabId, { active: true });
+}
+
+function execute({
+  tabId,
+  file,
+}: {
+  tabId: number,
+  file: string,
+}): Promise<?Array<any>> {
+  return new Promise((resolve, reject) => {
+    try {
+      chrome.tabs.executeScript(tabId, { file }, resolve);
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+export { create, update, remove, activate, execute };

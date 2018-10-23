@@ -1,12 +1,18 @@
 // @flow
-import { create, update, remove } from './chrome/tabs';
+import { create, update, remove, activate, execute } from './chrome/tabs';
 import { updateSettings, getSetting } from './utils/settings';
 import * as Stage from './utils/stage';
 import * as Event from './utils/event';
 import type { BookmarkList } from './utils/types';
 
-async function reset(tabId: number) {
-  await remove(tabId);
+async function reset({
+  tabId,
+  removeTab,
+}: {
+  tabId: number,
+  removeTab?: boolean,
+}) {
+  if (removeTab) await remove(tabId);
   await updateSettings(() => ({
     stage: Stage.idle,
     activeTab: null,
@@ -74,14 +80,14 @@ function resetOnRemove(
 ) {
   if (!isWindowClosing) {
     getSetting({ activeTab: null }).then(async ({ activeTab }) => {
-      if (activeTab && activeTab === tabId) reset(activeTab);
+      if (activeTab && activeTab === tabId) reset({ tabId: activeTab });
     });
   }
 }
 
 async function resetOnStopTraverse() {
   const { activeTab } = await getSetting({ activeTab: null });
-  if (activeTab) await reset(activeTab);
+  if (activeTab) await reset({ tabId: activeTab, removeTab: true });
 }
 
 chrome.runtime.onMessage.addListener(
@@ -114,3 +120,11 @@ chrome.runtime.onMessage.addListener(
 );
 
 chrome.tabs.onRemoved.addListener(resetOnRemove);
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  getSetting({ activeTab: null }).then(async ({ activeTab }) => {
+    if (activeTab && activeTab === tabId && changeInfo.status === 'complete') {
+      await execute({ tabId: activeTab, file: 'content.js' });
+    }
+  });
+});

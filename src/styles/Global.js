@@ -9,7 +9,6 @@ const Global = createGlobalStyle`
   html {
     font-size: ${p => p.theme.type.baseFontSize * 16}px;
     line-height: ${leading(1)};
-    border-radius: 4px;
   }
 
   *,
