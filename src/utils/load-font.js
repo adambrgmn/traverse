@@ -2,7 +2,7 @@
 import WebFont from 'webfontloader';
 
 function loadFont(families: Array<string>): Promise<void> {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     try {
       WebFont.load({
         google: { families },
@@ -10,7 +10,7 @@ function loadFont(families: Array<string>): Promise<void> {
         inactive: () => resolve(),
       });
     } catch (err) {
-      reject(err);
+      resolve();
     }
   });
 }
