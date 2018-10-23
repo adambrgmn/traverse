@@ -1,5 +1,5 @@
 // @flow
-import React, { PureComponent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { size, margin } from '../styles/utils';
 
@@ -12,52 +12,13 @@ const Img = styled.img`
 `;
 
 type Props = {
-  url: string, // eslint-disable-line
+  url: string,
 };
 
-type State = {
-  src: string,
-};
-
-class Favicon extends PureComponent<Props, State> {
-  state = {
-    src: '',
-  };
-
-  componentDidMount() {
-    this.downloadIcon();
-  }
-
-  downloadIcon = async () => {
-    try {
-      const { url } = this.props;
-      const { origin } = new URL(url);
-      const src = `${origin}/favicon.ico`;
-
-      const img = new Image();
-      img.src = src;
-      img.onload = () => this.setState(() => ({ src }));
-
-      img.onerror = async () => {
-        try {
-          const res = await fetch(origin, { mode: 'no-cors' });
-          const text = await res.text();
-          console.log(text);
-        } catch (err) {
-          console.error(origin, err);
-          // void
-        }
-      };
-    } catch (err) {
-      console.log(err);
-      // void
-    }
-  };
-
-  render() {
-    const { src } = this.state;
-    return src && <Img src={src} alt="" />;
-  }
+function Favicon({ url }: Props) {
+  return (
+    <Img src={`https://www.google.com/s2/favicons?domain=${url}`} alt="" />
+  );
 }
 
 export { Favicon };

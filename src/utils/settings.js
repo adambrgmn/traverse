@@ -1,5 +1,5 @@
 // @flow
-import { get, set } from './chrome/storage';
+import { get, set } from '../chrome/storage';
 import type { Settings } from './types';
 
 type SettingsShape = $Shape<Settings>;

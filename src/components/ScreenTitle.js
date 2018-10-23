@@ -1,11 +1,12 @@
 import styled from 'styled-components';
-import { size, padding } from '../styles/utils';
+import { size, margin, leading } from '../styles/utils';
 
 const ScreenTitle = styled.h1`
   width: 100%;
-  margin: 0;
-  padding: ${padding(0.5)};
-  font-size: ${size(1)};
+  margin-bottom: ${margin(1)};
+  padding: 0;
+  font-size: ${size(1.5)};
+  line-height: ${leading(1)};
 `;
 
 export { ScreenTitle };

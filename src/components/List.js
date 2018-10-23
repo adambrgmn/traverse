@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { lighten, borderRadius } from 'polished';
 import { padding, color, size } from '../styles/utils';
 
@@ -24,6 +24,12 @@ const ListItem = styled.li`
   &:last-child {
     ${borderRadius('bottom', '4px')};
   }
+
+  ${p =>
+    p.active &&
+    css`
+      background-color: ${color('brand')(p)};
+    `};
 `;
 
 const ListButton = styled.button`
@@ -34,15 +40,19 @@ const ListButton = styled.button`
   border: none;
   padding: ${padding(0.5)};
   font-size: ${size(1)};
+  text-align: left;
   background: transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-  & > span:first-child {
+  & > *:first-child {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  & > span:last-child {
+  & > *:last-child {
     margin-left: auto;
   }
 
@@ -60,7 +70,6 @@ const ListText = styled.span`
   display: block;
   width: 100%;
   height: 100%;
-  padding: ${padding(0.5)};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

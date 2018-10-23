@@ -4,162 +4,60 @@ import React, { Component, StrictMode, Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import * as theme from './styles/theme';
-import { getTree } from './chrome/bookmarks';
 import { Global } from './styles/Global';
-import { FolderPicker } from './screens/FolderPicker';
-import { StartTraversal } from './screens/StartTraversal';
-import { Loading } from './screens/Loading';
-import { getSetting } from './settings';
-import type {
-  Bookmark,
-  BookmarkDirectory,
-  BookmarkTree,
-  BookmarkList,
-  Stage,
-} from './types';
+import { Picker } from './screens/Picker';
+import { getSetting, updateSettings } from './utils/settings';
+import { Traverser } from './screens/Traverser';
+import * as Stage from './utils/stage';
+import type { Stage as StageType } from './utils/stage';
 
 type State = {
-  stage: ?Stage,
-  tree: BookmarkTree,
-  list: BookmarkList,
+  stage: StageType,
 };
 
 class App extends Component<*, State> {
   state = {
-    stage: null,
-    tree: [],
-    list: [],
+    stage: Stage.loading,
   };
 
   componentDidMount() {
     this.init();
+    this.listenForStateChange();
   }
 
-  componentDidUpdate(prevProps: *, prevState: State) {
-    const { stage } = this.state;
-
-    if (stage !== prevState.stage) {
-      switch (stage) {
-        case 'idle':
-          this.getBookmarks();
-          break;
-
-        default:
-          break;
-      }
-    }
-  }
-
-  async init() {
-    const { stage } = await getSetting({ stage: 'idle' });
-    this.setState(() => ({ stage }));
-  }
-
-  async getBookmarks() {
-    try {
-      const rawTree = await getTree();
-      const tree = this.processTree(rawTree);
-      this.setState({ tree });
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  processTree = (tree: Array<chrome$BookmarkTreeNode>): BookmarkTree =>
-    tree.reduce((acc, item) => {
-      if (item.children != null && Array.isArray(item.children)) {
-        const dir: BookmarkDirectory = {
-          type: 'directory',
-          id: item.id,
-          title: item.id === '0' ? '/' : item.title,
-          children: this.processTree(item.children),
-        };
-
-        return [...acc, dir];
-      }
-
-      if (item.url != null) {
-        const bookmark: Bookmark = {
-          type: 'bookmark',
-          id: item.id,
-          title: item.title,
-          url: item.url,
-        };
-
-        return [...acc, bookmark];
-      }
-
-      return acc;
-    }, []);
-
-  extractBookmarks = (tree: BookmarkTree): BookmarkList => {
-    const list = tree.reduce((acc, item) => {
-      switch (item.type) {
-        case 'bookmark':
-          return [...acc, item];
-
-        case 'directory':
-          return [...acc, ...this.extractBookmarks(item.children)];
-
-        default:
-          return acc;
-      }
-    }, []);
-
-    return list;
+  listenForStateChange = () => {
+    chrome.storage.onChanged.addListener(changes => {
+      Object.entries(changes).forEach(([key, value]) => {
+        if (key === 'stage') {
+          // $FlowFixMe
+          this.setState(() => ({ stage: value.newValue }));
+        }
+      });
+    });
   };
 
-  handleDirectoryClick = (dir: BookmarkDirectory) => {
-    const list = this.extractBookmarks(dir.children);
-    this.setState(() => ({ list }));
-  };
+  init = async () => {
+    const { stage } = await getSetting({ stage: Stage.idle });
 
-  handleReset = () => {
-    this.setState(() => ({ list: [] }));
-  };
-
-  handleStart = () => {};
-
-  renderScreen() {
-    const { tree, list, stage } = this.state;
-
-    switch (stage) {
-      case null:
-        return <Loading />;
-
-      case 'idle':
-        if (!tree.length && !list.length) return <Loading />;
-        if (list.length)
-          return (
-            <StartTraversal
-              list={list}
-              onResetClick={this.handleReset}
-              onStartClick={this.handleStart}
-            />
-          );
-        return (
-          <FolderPicker
-            tree={tree}
-            onDirectoryClick={this.handleDirectoryClick}
-          />
-        );
-
-      case 'traversing':
-        return null;
-
-      case 'error':
-      default:
-        return null;
+    if (Object.values(Stage).includes(stage)) {
+      this.setState(() => ({ stage }));
+    } else {
+      await updateSettings(() => ({ stage: Stage.idle }));
+      this.setState(() => ({ stage: Stage.idle }));
     }
-  }
+  };
 
   render() {
+    const { stage } = this.state;
+
     return (
       <StrictMode>
         <ThemeProvider theme={theme}>
           <Fragment>
             <Global />
-            {this.renderScreen()}
+            {stage === Stage.loading && <p>Loading...</p>}
+            {stage === Stage.idle && <Picker />}
+            {stage === Stage.traversing && <Traverser />}
           </Fragment>
         </ThemeProvider>
       </StrictMode>

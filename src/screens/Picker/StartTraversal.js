@@ -1,17 +1,25 @@
 // @flow
 import React, { PureComponent, Fragment } from 'react';
-import { List, ListItem, ListText } from '../components/List';
-import { ButtonList, Button, HiddenText } from '../components/Button';
-import { Favicon } from '../components/Favicon';
-import type { BookmarkList } from '../types';
+import { ButtonList, Button, HiddenText } from '../../components/Button';
+import { BookmarkList } from '../../components/BookmarkList';
+import type {
+  BookmarkList as BookmarkListType,
+  Bookmark,
+} from '../../utils/types';
 
 type Props = {
-  list: BookmarkList,
+  list: BookmarkListType,
   onResetClick: () => void | Promise<void>,
   onStartClick: () => void | Promise<void>,
 };
 
 class StartTraversal extends PureComponent<Props, *> {
+  getTitle = (item: Bookmark) => {
+    if (item.title) return item.title;
+    const url = new URL(item.url);
+    return `${url.host}${url.pathname.replace(/\/$/, '')}`;
+  };
+
   render() {
     const { list, onResetClick, onStartClick } = this.props;
 
@@ -27,16 +35,7 @@ class StartTraversal extends PureComponent<Props, *> {
           </Button>
         </ButtonList>
 
-        <List>
-          {list.map(item => (
-            <ListItem key={item.id}>
-              <ListText>
-                <Favicon url={item.url} />
-                {item.title || item.url}
-              </ListText>
-            </ListItem>
-          ))}
-        </List>
+        <BookmarkList list={list} />
       </Fragment>
     );
   }
