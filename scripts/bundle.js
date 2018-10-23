@@ -32,8 +32,8 @@ async function run() {
       `${pkg.name}-${pkg.version}.zip`,
     );
 
-    await execa('mv', ['key.crx', 'dist/key.crx']);
-    await execa('mv', ['key.pem', 'dist/key.pem']);
+    await execa('cp', ['./key.crx', './dist/key.crx']);
+    await execa('cp', ['./key.pem', './dist/key.pem']);
     await execa('zip', ['-r', archiveFile, './dist']);
     spinner.succeed('Extension bundled');
   } catch (err) {
