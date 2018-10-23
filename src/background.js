@@ -1,5 +1,5 @@
 // @flow
-import { create, update, remove, activate, execute } from './chrome/tabs';
+import { create, update, remove, execute } from './chrome/tabs';
 import { updateSettings, getSetting } from './utils/settings';
 import * as Stage from './utils/stage';
 import * as Event from './utils/event';
@@ -21,17 +21,34 @@ async function reset({
   }));
 }
 
+function checkPermissions(bookmarks: BookmarkList) {
+  const origins = bookmarks.map(b => b.url);
+
+  return new Promise((resolve, reject) => {
+    chrome.permissions.request({ origins }, granted => {
+      if (granted) resolve();
+      else reject(new Error('Extension not granted access to origins'));
+    });
+  });
+}
+
 async function initTraversal({ bookmarkList }: { bookmarkList: BookmarkList }) {
   if (bookmarkList.length > 0) {
-    const { url, id } = bookmarkList[0];
-    const tab = await create({ url });
+    try {
+      await checkPermissions(bookmarkList);
 
-    await updateSettings(() => ({
-      stage: Stage.traversing,
-      activeTab: tab.id,
-      lastItemId: id,
-      bookmarkList,
-    }));
+      const { url, id } = bookmarkList[0];
+      const tab = await create({ url });
+
+      await updateSettings(() => ({
+        stage: Stage.traversing,
+        activeTab: tab.id,
+        lastItemId: id,
+        bookmarkList,
+      }));
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
 
