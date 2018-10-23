@@ -1,6 +1,6 @@
 {
   "name": "traverse",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Chrome Extension to toggle thru a directory of bookmarks",
   "main": "index.js",
   "repository": "git@github.com:adambrgmn/traverse.git",
