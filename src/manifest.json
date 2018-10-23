@@ -33,12 +33,6 @@
     "128": "./icons/icon@128.png"
   },
 
-  "permissions": [
-    "bookmarks",
-    "storage",
-    "tabs",
-    "activeTab",
-    "http://*/*",
-    "https://*/*"
-  ]
+  "permissions": ["bookmarks", "storage", "tabs", "activeTab"],
+  "optional_permissions": ["http://*/*", "https://*/*"]
 }
