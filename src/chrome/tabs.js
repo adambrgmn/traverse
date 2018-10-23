@@ -56,14 +56,19 @@ function activate(tabId: number): Promise<?chrome$Tab> {
 
 function execute({
   tabId,
-  file,
+  ...props
 }: {
-  tabId: number,
-  file: string,
+  tabId?: number,
+  allFrames?: boolean,
+  code?: string,
+  file?: string,
+  frameId?: number,
+  matchAboutBlank?: boolean,
+  runAt?: chrome$RunAt,
 }): Promise<?Array<any>> {
   return new Promise((resolve, reject) => {
     try {
-      chrome.tabs.executeScript(tabId, { file }, resolve);
+      chrome.tabs.executeScript(tabId, props, resolve);
     } catch (err) {
       reject(err);
     }
