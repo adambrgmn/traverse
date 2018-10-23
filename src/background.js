@@ -22,7 +22,7 @@ async function reset({
 }
 
 function checkPermissions(bookmarks: BookmarkList) {
-  const origins = bookmarks.map(b => b.url);
+  const origins = bookmarks.map(b => `${b.url.replace(/\/$/, '')}/*`);
 
   return new Promise((resolve, reject) => {
     chrome.permissions.request({ origins }, granted => {
