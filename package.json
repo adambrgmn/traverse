@@ -8,8 +8,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "parcel watch src/manifest.json",
-    "build": "parcel build src/manifest.json",
+    "start": "rimraf dist && NODE_ENV=development parcel watch src/manifest.json",
+    "build": "rimraf dist && NODE_ENV=production parcel build src/manifest.json && node scripts/bundle.js",
     "flow": "flow"
   },
   "devDependencies": {
@@ -30,13 +30,16 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
+    "execa": "^1.0.0",
     "flow-bin": "^0.83.0",
     "flow-interfaces-chrome": "^0.5.2",
     "husky": "^1.1.2",
     "lint-staged": "^7.3.0",
+    "ora": "^3.0.0",
     "parcel": "^1.10.3",
     "parcel-plugin-web-extension": "^1.4.0",
-    "prettier": "^1.14.3"
+    "prettier": "^1.14.3",
+    "rimraf": "^2.6.2"
   },
   "dependencies": {
     "polished": "^2.2.0",
