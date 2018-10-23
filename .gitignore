@@ -1,6 +1,10 @@
 # Dist
 dist
 
+# App keys
+key.crx
+key.pem
+
 # Logs
 logs
 *.log
