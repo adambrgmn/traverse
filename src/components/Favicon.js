@@ -17,7 +17,11 @@ type Props = {
 
 function Favicon({ url }: Props) {
   return (
-    <Img src={`https://www.google.com/s2/favicons?domain=${url}`} alt="" />
+    <Img
+      src={`https://www.google.com/s2/favicons?domain=${url}`}
+      alt=""
+      data-testid="favicon"
+    />
   );
 }
 

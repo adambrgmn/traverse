@@ -2,13 +2,17 @@ import styled, { css } from 'styled-components';
 import { lighten, borderRadius } from 'polished';
 import { padding, color, size } from '../styles/utils';
 
-const List = styled.ul`
+const List = styled.ul.attrs({
+  'data-testid': 'list',
+})`
   padding: 0;
   margin: 0;
   list-style: none;
 `;
 
-const ListItem = styled.li`
+const ListItem = styled.li.attrs({
+  'data-testid': 'list-item',
+})`
   flex: 1;
   min-width: 0;
   margin: 0;
@@ -32,7 +36,9 @@ const ListItem = styled.li`
     `};
 `;
 
-const ListButton = styled.button`
+const ListButton = styled.button.attrs({
+  'data-testid': 'list-button',
+})`
   display: flex;
   justify-content: flex-start;
   width: 100%;
@@ -66,7 +72,9 @@ const ListButton = styled.button`
   }
 `;
 
-const ListText = styled.span`
+const ListText = styled.span.attrs({
+  'data-testid': 'list-text',
+})`
   display: block;
   width: 100%;
   height: 100%;

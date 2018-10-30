@@ -31,6 +31,7 @@ class FolderPicker extends PureComponent<Props, *> {
   renderList = (tree: BookmarkTree, parents: Array<string> = []) => {
     const { onDirectoryClick } = this.props;
 
+    // $FlowFixMe
     return tree.map(item => {
       if (item.type === 'directory') {
         const itemCount = this.countItems(item.children);

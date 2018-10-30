@@ -60,4 +60,40 @@ const extractBookmarks = (
   return bookmarkList;
 };
 
-export { processTree, extractBookmarks };
+const extractDirectories = (tree: BookmarkTree): Array<BookmarkDirectory> => {
+  const directoryList = tree.reduce((acc, item) => {
+    switch (item.type) {
+      case 'directory':
+        return [...acc, item, ...extractDirectories(item.children)];
+      case 'bookmark':
+      default:
+        return acc;
+    }
+  }, []);
+
+  return directoryList;
+};
+
+const findByTitle = (
+  tree: BookmarkTree,
+  title: string | RegExp,
+): ?(BookmarkDirectory | Bookmark) => {
+  const match = (str: string) => {
+    if (typeof title === 'string') return str === title;
+    return title.test(str);
+  };
+
+  const result = tree.reduce((res, item) => {
+    if (res != null) return res;
+
+    if (match(item.title)) return item;
+    if (item.type === 'bookmark' && match(item.url)) return item;
+
+    if (item.type === 'directory') return findByTitle(item.children, title);
+    return null;
+  }, null);
+
+  return result;
+};
+
+export { processTree, extractBookmarks, extractDirectories, findByTitle };

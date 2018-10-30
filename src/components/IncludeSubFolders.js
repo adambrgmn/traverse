@@ -24,6 +24,7 @@ function IncludeSubFolders({ include, onChange }: Props) {
           name="include-subfolders"
           checked={include}
           onChange={onChange}
+          data-testid="include-subfolders-checkbox"
         />{' '}
         <span>Include subfolders</span>
       </label>
